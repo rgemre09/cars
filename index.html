@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Prolog животни с различни правила и GIF</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 700px;
+      margin: 30px auto;
+      background: #f9f9f9;
+      color: #333;
+      padding: 20px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      border-radius: 10px;
+      text-align: center;
+    }
+    textarea {
+      width: 90%;
+      max-width: 600px;
+      height: 120px;
+      font-family: monospace;
+      font-size: 16px;
+      margin-top: 10px;
+      border-radius: 6px;
+      border: 2px solid #007acc;
+      padding: 8px;
+      resize: vertical;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 25px;
+      font-size: 18px;
+      background-color: #007acc;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #005f99;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      min-height: 30px;
+      font-weight: bold;
+      color: #004a99;
+    }
+    .animal-container {
+      margin-top: 30px;
+      min-height: 160px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #d0e8ff;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #a0c4ff;
+    }
+    .animal-gif {
+      max-width: 180px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #005f99;
+    }
+  </style>
+</head>
+<body>
+  <h1>Задание: Програма с Prolog за животни и GIF визуализация</h1>
+
+  <p class="instructions">
+    Имате задача да създадете малко приложение, което използва <strong>Пролог</strong> за логическо извеждане на животни.  
+    След като въведете Prolog заявка, програмата ще търси резултат и ако открие животно, ще покаже подходяща анимирана GIF картинка.  
+    <br><br>
+    <strong>Как да добавите собствен Prolog код?</strong><br>
+    - В кода в променливата <code>knowledge</code> можете да добавяте нови животни и правила.<br>
+    - Например: <code>animal(elephant).</code> и съответно правила като <code>is_mammal(X) :- animal(X).</code><br>
+    <br>
+    <strong>Как да добавите нови GIF изображения?</strong><br>
+    - Намерете подходящ анимиран GIF в интернет (например в <a href="https://giphy.com" target="_blank">Giphy</a> или друг сайт).<br>
+    - Копирайте директния линк към GIF файла.<br>
+    - Добавете нов запис в обекта <code>animalAnimations</code> с името на животното и HTML за картинката, например:<br>
+    <code>elephant: '&lt;img src="your_gif_link.gif" class="animal-gif" alt="Elephant" /&gt;'</code><br>
+    - Не забравяйте да добавите и животното в Prolog базата.<br>
+  </p>
+
+
+  <h1>Prolog животни с различни правила и GIF</h1>
+
+  <textarea id="prolog-input">
+% Примери на заявки:
+is_mammal(X).
+is_big(X).
+is_predator(X).
+  </textarea><br />
+  <button onclick="runProlog()">Изпълни</button>
+
+  <div id="result"></div>
+  <div class="animal-container" id="animal-animation"></div>
+
+  <script src="https://unpkg.com/tau-prolog"></script>
+  <script>
+    const session = pl.create();
+
+    // Разширена база знания с cars и правила
+    const knowledge = `
+      car(ferrari).
+      car(tesla).
+      car(bmw).
+      car(lada).
+
+% Правила
+is_electric(tesla) :- electric(tesla).
+is_sport_car(bmw) :- sport_car(bmw).
+is_sport_car(ferrari) :- sport_car(ferrari).
+is_classic(lada) :- classic(lada).
+
+    `;
+
+    session.consult(knowledge);
+
+    const animalAnimations = {
+      ferrari:'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExbXBjMm1pd3QwYXV0aWh6Y3IxdHhtbXE1NzlwZ2c0NXZxdW5jdWVzciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/UAQut6DhqasaQ/giphy.gif',
+      tesla:'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExMXU5NGw5b3h0YXJ2MWtmOGIyMXFuMHJ1MXBlNDFjNjU5bWprNzRhNiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/S7jznj1TlqH9otxZux/giphy.gif',
+      bmw: 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExMDBldWp0c3NmdDFseWN1dWI4NXFxcmxxOW1mbDZhdzc0MW1wNXgzMyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/yEWNsqrj8K7acGcCeo/giphy.gif',
+      lada: 'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExdnVjY3ZjemZpaTc5OWQ5aW5lcnc3d3k0bjAyMXZrZ21hOGJha3VrbSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Ce8u8bcrZ5Ruw/giphy.gif'
+    };
+
+    function runProlog() {
+      const input = document.getElementById("prolog-input").value;
+      const resultDiv = document.getElementById("result");
+      const animDiv = document.getElementById("animal-animation");
+
+      resultDiv.innerHTML = "";
+      animDiv.innerHTML = "";
+
+      session.query(input);
+      session.answers(answer => {
+        if(answer === false) {
+          resultDiv.innerHTML += `<p>Няма повече резултати.</p>`;
+          return;
+        }
+        const str = pl.format_answer(answer);
+        if (str === "false.") {
+          resultDiv.innerHTML = "<p>Няма резултати за тази заявка.</p>";
+          return;
+        }
+        resultDiv.innerHTML += `<p>${str}</p>`;
+
+        const match = str.match(/X = (\w+)/);
+        if (match) {
+          const animal = match[1];
+          if (animalAnimations[animal]) {
+            animDiv.innerHTML = animalAnimations[animal];
+          } else {
+            animDiv.innerHTML = "<p>Няма GIF за това животно.</p>";
+          }
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>
